@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using RCountNewsFeed.API.Models.DTOs;
 using RCountNewsFeed.Models;
 using RCountNewsFeed.Models.DTOs.Category;
 using RCountNewsFeed.Models.DTOs.News;
@@ -17,5 +18,6 @@ public class AutoMapperProfile : Profile
             .ForMember(dest => dest.CreatedByUserId, opt => opt.MapFrom(src => src.CreatedByUserId))
             .ForMember(dest => dest.UpdatedByUserId, opt => opt.MapFrom(src => src.UpdatedByUserId));
         CreateMap<NewsDto, News>().ReverseMap();
+        CreateMap<ProjectDto, Project>().ReverseMap();
     }
 }

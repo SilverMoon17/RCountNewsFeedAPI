@@ -32,12 +32,12 @@ public class NewsRepository : INewsRepository
     
     public async Task<News?> GetNewsByIdAsync(int newsId)
     {
-        return await _dbContext.News.Include(n => n.Category).FirstOrDefaultAsync(n => n.Id == newsId);
+        return await _dbContext.News.Include(n => n.Category).Include(n=> n.Project).FirstOrDefaultAsync(n => n.Id == newsId);
     }
     
     public async Task<IEnumerable<News>> GetAllNewsAsync()
     {
-        return await _dbContext.News.Include(n => n.Category).ToListAsync();
+        return await _dbContext.News.Include(n => n.Category).Include(n=> n.Project).ToListAsync();
     }
     
     public async Task<IEnumerable<News>> GetLatestNewsAsync(int count)
@@ -45,6 +45,7 @@ public class NewsRepository : INewsRepository
         var newsList = await _dbContext.News.OrderByDescending(n => n.Created)
             .Take(count)
             .Include(n => n.Category)
+            .Include(n=> n.Project)
             .ToListAsync();
     
         return newsList;

@@ -19,16 +19,11 @@ public class CategoryService : ICategoryService
 
     public async Task<CategoryDto> CreateCategoryAsync(CategoryDto categoryDto)
     {
-        var category = new Category
-        {
-            CategoryName = categoryDto.CategoryName
-        };
-
-        await _categoryRepository.AddAsync(category);
-
-        categoryDto.Id = category.Id;
+        var category = _mapper.Map<Category>(categoryDto);
         
-        return categoryDto;
+        category = await _categoryRepository.AddAsync(category);
+        
+        return _mapper.Map<CategoryDto>(category);
     }
     
     public async Task<CategoryDto> GetCategoryByIdAsync(int categoryId)

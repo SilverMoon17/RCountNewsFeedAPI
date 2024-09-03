@@ -20,9 +20,11 @@ builder.Services.AddDbContext<ApplicationDbContext>(options =>
 
 builder.Services.AddScoped<ICategoryRepository, CategoryRepository>();
 builder.Services.AddScoped<INewsRepository, NewsRepository>();
+builder.Services.AddScoped<IProjectRepository, ProjectRepository>();
 
 builder.Services.AddScoped<ICategoryService, CategoryService>();
 builder.Services.AddScoped<INewsService, NewsService>();
+builder.Services.AddScoped<IProjectService, ProjectService>();
 
 builder.Services.AddAutoMapper(typeof(AutoMapperProfile));
 

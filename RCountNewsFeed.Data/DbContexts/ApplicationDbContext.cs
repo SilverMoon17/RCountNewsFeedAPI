@@ -11,8 +11,9 @@ public class ApplicationDbContext : DbContext
         
     }
 
-    public DbSet<News?> News { get; set; }
+    public DbSet<News> News { get; set; }
     public DbSet<Category> Categories { get; set; }
+    public DbSet<Project> Projects { get; set; }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
@@ -44,5 +45,12 @@ public class ApplicationDbContext : DbContext
             }
         );
 
+        modelBuilder.Entity<Project>().HasData(
+            new Project
+            {
+                Id = 1,
+                ProjectName = "RCount",
+                ProjectUrl = "rti.md"
+            });
     }
 }

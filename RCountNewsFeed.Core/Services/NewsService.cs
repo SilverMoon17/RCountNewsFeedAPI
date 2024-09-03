@@ -10,22 +10,33 @@ public class NewsService : INewsService
 {
     private readonly INewsRepository _newsRepository;
     private readonly ICategoryRepository _categoryRepository;
+    private readonly IProjectRepository _projectRepository;
     
     private readonly IMapper _mapper;
 
-    public NewsService(INewsRepository newsRepository, ICategoryRepository categoryRepository, IMapper mapper)
+    public NewsService(INewsRepository newsRepository, ICategoryRepository categoryRepository, IMapper mapper, IProjectRepository projectRepository)
     {
         _newsRepository = newsRepository;
         _categoryRepository = categoryRepository;
         _mapper = mapper;
+        _projectRepository = projectRepository;
     }
 
     public async Task<NewsDto> CreateNewsAsync(CreateNewsRequestDto createNewsRequestDto)
     {
         var category = await _categoryRepository.GetCategoryByIdAsync(createNewsRequestDto.CategoryId);
-    
+
         if (category is null)
+        {
             throw new ArgumentException($"Category with Id {createNewsRequestDto.CategoryId} does not exist.", nameof(createNewsRequestDto.CategoryId));
+        }
+        
+        var project = await _projectRepository.GetProjectByIdAsync(createNewsRequestDto.ProjectId);
+
+        if (project is null)
+        {
+            throw new ArgumentException($"Project with Id {createNewsRequestDto.ProjectId} does not exist.", nameof(createNewsRequestDto.CategoryId));
+        }
     
         var newsModel = new News
         {
@@ -33,6 +44,7 @@ public class NewsService : INewsService
             Text = createNewsRequestDto.Text,
             ImageUrl = createNewsRequestDto.ImageUrl,
             Category = category,
+            Project = project,
             CreatedByUserId = createNewsRequestDto.CreatedByUserId,
             UpdatedByUserId = createNewsRequestDto.UpdatedByUserId
         };
@@ -74,16 +86,29 @@ public class NewsService : INewsService
     public async Task<NewsDto> UpdateNewsAsync(UpdateNewsRequestDto updateNewsRequestDto)
     {
         var news = await _newsRepository.GetNewsByIdAsync(updateNewsRequestDto.Id);
-    
+
         if (news is null)
+        {
             throw new ArgumentException($"News with Id {updateNewsRequestDto.Id} does not exist.", nameof(updateNewsRequestDto.Id));
+        }
         
         var category = await _categoryRepository.GetCategoryByIdAsync(updateNewsRequestDto.CategoryId);
-        
+
         if (category is null)
+        {
             throw new ArgumentException($"Category with Id {updateNewsRequestDto.CategoryId} does not exist.", nameof(updateNewsRequestDto.CategoryId));
+        }
+
+        var project = await _projectRepository.GetProjectByIdAsync(updateNewsRequestDto.ProjectId);
+
+        if (project is null)
+        {
+            throw new ArgumentException($"Project with Id {updateNewsRequestDto.ProjectId} does not exist.", nameof(updateNewsRequestDto.ProjectId));
+        }
+            
     
         news.Category = category;
+        news.Project = project;
         news.Updated = DateTime.UtcNow;
         news.Header = updateNewsRequestDto.Header;
         news.Text = updateNewsRequestDto.Text;
